@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MirrorTask": {
+      "commandName": "Project",
+      "commandLineArgs": "filerunner -f Eureka.bat \"Hello World.bat\""
+    }
+  }
+}
