@@ -2,9 +2,10 @@
 using MirrorTask.Repositories;
 using MirrorTask.Settings;
 using MirrorTask.Translators;
-using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace MirrorTask.Executors
 {
@@ -14,21 +15,27 @@ namespace MirrorTask.Executors
         {
             var directoryRepository = new FileDirectoryRepository(new FileQueries(), new FileDirectoryTranslator(), new ApplicationSettings());
             var directoriesToActOn = directoryRepository.DefaultDirectories();
+            var directorySearchOption = fileRunnerOptions.IncludeSubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            var filesToCall = new List<string>();
 
             foreach (var directory in directoriesToActOn)
             {
                 if (Directory.Exists(directory.AbsolutePath))
                 {
-                    var allFiles = Directory.GetFiles(directory.AbsolutePath);
-                    foreach (var file in fileRunnerOptions.Files)
+                    var allFilePaths = Directory.GetFiles(directory.AbsolutePath, "*", directorySearchOption);
+
+                    foreach (var targetFileName in fileRunnerOptions.Files)
                     {
-                        var fileToCall = Array.Find(allFiles, x => x.Contains(file));
-                        if (fileToCall != null)
-                        {
-                            Process.Start("cmd", "/c \"" + fileToCall + "\"");
-                        }
+                        filesToCall.AddRange(allFilePaths.Where(filePath => filePath.EndsWith(targetFileName)));
                     }
                 }
+            }
+
+            var distinctFilesToCall = filesToCall.Distinct();
+
+            foreach (var fileToCall in distinctFilesToCall)
+            {
+                Process.Start("cmd", "/c \"" + fileToCall + "\"");
             }
 
             return 1;

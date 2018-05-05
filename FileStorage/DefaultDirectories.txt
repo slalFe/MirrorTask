@@ -1,1 +1,6 @@
 C:\Projects\MirrorTask\TestFolder\
+C:\Projects\MirrorTask\TestFolder\A\
+C:\Projects\MirrorTask\TestFolder\B\
+C:\Projects\MirrorTask\TestFolder\C\
+C:\Projects\MirrorTask\TestFolder\D\
+C:\Projects\MirrorTask\TestFolder\E\
